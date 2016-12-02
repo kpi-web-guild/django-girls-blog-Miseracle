@@ -3,6 +3,11 @@
     <title>Post list</title>
   </head>
   <body>
-    Static post list. Kinda strange to write plain html, but nvm.
+    {%for post in posts %}
+        <div>
+          <p>published: {{ post.published_date }}</p>
+          <h1><p>{{post.title}}</p></h1>
+          <p>{{ post.text|linebreaksbr }}</p>
+    {%endfor%}
   </body>
 </html>
