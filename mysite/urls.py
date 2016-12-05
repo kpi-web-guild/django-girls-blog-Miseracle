@@ -1,3 +1,9 @@
+"""Store all urls used in project.
+
+- admin/ - admin control panel;
+- / - blog urls.
+"""
+
 from django.conf.urls import include, url
 from django.contrib import admin
 
