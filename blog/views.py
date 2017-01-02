@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
 from django.utils import timezone
 from .forms import PostForm
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -26,6 +27,7 @@ def post_detail(request, pk):
     return render(request, 'blog/post_detail.html', {'post': post})
 
 
+@login_required
 def post_new(request):
     """Create new post."""
     if request.method == 'POST':
@@ -40,6 +42,7 @@ def post_new(request):
     return render(request, 'blog/post_edit.html', {'form': form})
 
 
+@login_required
 def post_edit(request, pk):
     """Edit existing post."""
     post = get_object_or_404(Post, pk=pk)
@@ -55,6 +58,7 @@ def post_edit(request, pk):
     return render(request, 'blog/post_edit.html', {'form': form})
 
 
+@login_required
 def post_draft_list(request):
     """Unpublished posts."""
     posts = (
@@ -65,6 +69,7 @@ def post_draft_list(request):
     return render(request, 'blog/post_draft_list.html', {'posts': posts})
 
 
+@login_required
 def post_publish(request, pk):
     """Publish post."""
     post = get_object_or_404(Post, pk=pk)
@@ -72,6 +77,7 @@ def post_publish(request, pk):
     return redirect('post_detail', pk=pk)
 
 
+@login_required
 def post_remove(request, pk):
     """Delete post."""
     post = get_object_or_404(Post, pk=pk)

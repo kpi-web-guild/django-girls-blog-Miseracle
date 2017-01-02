@@ -3,3 +3,5 @@ python: 3.5
 cache: pip
 before_install: pip install -U pre-commit
 script: pre-commit run --all-files
+notifications:
+  email: false
