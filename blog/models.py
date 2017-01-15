@@ -31,25 +31,26 @@ class Post(models.Model):
         """Show post title."""
         return self.title
 
+    @property
     def approved_comments(self):
-        """Return all approved(published) comments."""
-        return self.comments.filter(approved_comment=True)
+        """Return all approved (published) comments."""
+        return self.comments.filter(is_approved=True)
 
 
 class Comment(models.Model):
     """Represents a comment to post."""
 
-    post = models.ForeignKey('blog.Post', related_name='comments')
+    post = models.ForeignKey('Post', related_name='comments')
     author = models.CharField(max_length=200)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
-    approved_comment = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
 
     def approve(self):
         """Approve comment."""
-        self.approved_comment = True
+        self.is_approved = True
         self.save()
 
     def __str__(self):
-        """Return comment text."""
+        """Represent a comment as a string by its text."""
         return self.text
