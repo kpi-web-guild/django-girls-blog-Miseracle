@@ -119,6 +119,6 @@ ALLOWED_HOSTS = ['*']
 DEBUG = False
 
 try:
-    from .local_settings import *
+    from .local_settings import BASE_DIR, DATABASES, DEBUG  # noqa: F401
 except ImportError:
     pass
