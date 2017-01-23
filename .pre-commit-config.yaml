@@ -10,7 +10,7 @@
     -   id:  double-quote-string-fixer
     -   id:  end-of-file-fixer
     -   id:  flake8
-        exclude: '^blog/migrations/'
+        exclude: blog/migrations
         args: [--max-line-length=120]
     -   id:  name-tests-test
     -   id:  requirements-txt-fixer
