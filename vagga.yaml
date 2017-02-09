@@ -16,15 +16,6 @@ containers:
     - !PipConfig
       dependencies: true
     - !Py3Requirements requirements.txt
-  alpine:
-    setup:
-    - !Alpine v3.4
-    - !PipConfig
-      dependencies: true
-    - !BuildDeps [postgresql-dev]
-    - !Install [python, python3, libpq]
-    - !Py3Requirements requirements.txt
-    environ-file: /work/mysite/.env
 commands:
   run: !Command
     description: Start server
