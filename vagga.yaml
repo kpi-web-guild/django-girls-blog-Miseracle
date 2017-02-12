@@ -5,11 +5,13 @@ containers:
     - !Alpine v3.4
     - !Py3Install
       - pip
-      - 'Django >=1.8'
-      - 'gunicorn >=19.6.0'
-      - 'whitenoise >=3.2.3'
-      - 'django-environ >=0.4.1'
-    - !Sh pip freeze > requirements.txt
+      - 'Django >=1.8, <2.0'
+      - 'gunicorn >=19.6.0, <20.0'
+      - 'whitenoise >=3.2.3, <4.0'
+      - 'django-environ >=0.4.1, <1.0'
+    - !Sh |
+        echo "-r base-requirements.txt" > requirements.txt
+        pip freeze >> requirements.txt
   django:
     setup:
     - !Alpine v3.4
