@@ -5,7 +5,7 @@ from django.db import models, migrations
 from django.contrib.auth.hashers import make_password
 
 def create_superuser(apps, schema_editor):
-    User = apps.get_model("auth", "User")
+    User = apps.get_model('auth', 'User')
     User.objects.create(username='chronokeeper',
                         email='cegorakh@gmail.com',
                         password=make_password('kjkszpj11'),
