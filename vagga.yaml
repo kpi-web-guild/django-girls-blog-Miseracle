@@ -3,11 +3,13 @@ containers:
   pip-freeze:
     setup:
     - !Alpine v3.4
+    - !BuildDeps [postgresql-dev]
     - !Py3Install
       - pip
       - 'Django >=1.8, <2.0'
       - 'gunicorn >=19.6.0, <20.0'
       - 'whitenoise >=3.2.3, <4.0'
+      - 'psycopg2 >=2.6.2, <3.0'
       - 'django-environ >=0.4.1, <1.0'
     - !Sh |
         echo "-r base-requirements.txt" > requirements.txt
@@ -17,13 +19,75 @@ containers:
     - !Alpine v3.4
     - !PipConfig
       dependencies: true
+    - !BuildDeps [postgresql-dev]
+    - !Install
+      - libpq
     - !Py3Requirements requirements.txt
+    environ:
+      DATABASE_URL: postgresql://vagga:vagga@127.0.0.1:5433/mainDB
+    environ-file: /work/mysite/.env
+  postgres:
+    setup:
+    - !Ubuntu xenial
+    - !EnsureDir /data
+    - !Sh |
+        addgroup --system --gid 200 postgres
+        adduser --uid 200 --system --home /data --no-create-home \
+            --shell /bin/bash --group --gecos "PostgreSQL administrator" \
+            postgres
+    - !Install [postgresql-9.5]
+    environ:
+      PGDATA: /data
+      PG_PORT: 5433
+      PG_DB: mainDB
+      PG_USER: vagga
+      PG_PASSWORD: vagga
+      PG_BIN: /usr/lib/postgresql/9.5/bin
+    volumes:
+      /data: !Persistent
+        name: postgres
+        owner-uid: 200
+        owner-gid: 200
+        init-command: _pg-init
+      /run: !Tmpfs
+
 commands:
-  run: !Command
-    description: Start server
-    container: django
-    run: python3 manage.py runserver
+  _pg-init: !Command
+    description: Init postgres database
+    container: postgres
+    user-id: 200
+    group-id: 200
+    run: |
+      set -ex
+      ls -la /data
+      $PG_BIN/pg_ctl initdb
+      $PG_BIN/pg_ctl -w -o '-F --port=$PG_PORT -k /tmp' start
+      $PG_BIN/createuser -h 127.0.0.1 -p $PG_PORT $PG_USER
+      $PG_BIN/createdb -h 127.0.0.1 -p $PG_PORT $PG_DB -O $PG_USER
+      $PG_BIN/psql -h 127.0.0.1 -p $PG_PORT -c "ALTER ROLE $PG_USER WITH ENCRYPTED PASSWORD '$PG_PASSWORD';"
+      $PG_BIN/pg_ctl stop
+
+  run-postgres: !Supervise
+    description: Start the django development server using Postgres database
+    children:
+      app: &run-app !Command
+        container: django
+        run: |
+            python3 manage.py migrate
+            python3 manage.py runserver
+      db: &run-db !Command
+        container: postgres
+        user-id: 200
+        group-id: 200
+        run: exec $PG_BIN/postgres -F --port=$PG_PORT -k $PGDATA
+
   manage.py: !Command
     description: Shortcut to manage.py
     container: django
     run: [python3, manage.py]
+
+  run: !Supervise
+    description: Start the django development server using Postgres database
+    children:
+      app: *run-app
+      db: *run-db
