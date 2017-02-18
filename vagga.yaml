@@ -7,10 +7,10 @@ containers:
     - !Py3Install
       - pip
       - 'Django >=1.8, <2.0'
-      - 'gunicorn >=19.6.0, <20.0'
-      - 'whitenoise >=3.2.3, <4.0'
-      - 'psycopg2 >=2.6.2, <3.0'
-      - 'django-environ >=0.4.1, <1.0'
+      - 'gunicorn >=19.6, <20.0'
+      - 'whitenoise >=3.2, <4.0'
+      - 'psycopg2 >=2.6, <3.0'
+      - 'django-environ >=0.4, <1.0'
     - !Sh |
         echo "-r base-requirements.txt" > requirements.txt
         pip freeze >> requirements.txt
