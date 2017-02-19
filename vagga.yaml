@@ -61,7 +61,7 @@ commands:
       set -ex
       ls -la /data
       $PG_BIN/pg_ctl initdb
-      $PG_BIN/pg_ctl -w -o '-F --port=$PG_PORT -k /tmp' start
+      $PG_BIN/pg_ctl -w -o '-F --port=$PG_PORT -k /run' start
       $PG_BIN/createuser -h 127.0.0.1 -p $PG_PORT $PG_USER
       $PG_BIN/createdb -h 127.0.0.1 -p $PG_PORT $PG_DB -O $PG_USER
       $PG_BIN/psql -h 127.0.0.1 -p $PG_PORT -c "ALTER ROLE $PG_USER WITH ENCRYPTED PASSWORD '$PG_PASSWORD';"
@@ -77,7 +77,7 @@ commands:
     container: postgres
     user-id: 200
     group-id: 200
-    run: exec $PG_BIN/postgres -F --port=$PG_PORT -k $PGDATA
+    run: exec $PG_BIN/postgres -F --port=$PG_PORT -k /run
 
   manage.py: !Command
     description: Shortcut to manage.py
