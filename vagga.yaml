@@ -67,19 +67,17 @@ commands:
       $PG_BIN/psql -h 127.0.0.1 -p $PG_PORT -c "ALTER ROLE $PG_USER WITH ENCRYPTED PASSWORD '$PG_PASSWORD';"
       $PG_BIN/pg_ctl stop
 
-  run-postgres: !Supervise
-    description: Start the django development server using Postgres database
-    children:
-      app: &run-app !Command
-        container: django
-        run: |
-            python3 manage.py migrate
-            python3 manage.py runserver
-      db: &run-db !Command
-        container: postgres
-        user-id: 200
-        group-id: 200
-        run: exec $PG_BIN/postgres -F --port=$PG_PORT -k $PGDATA
+
+    app: &run-app !Command
+      container: django
+      run: |
+          python3 manage.py migrate
+          python3 manage.py runserver
+    db: &run-db !Command
+      container: postgres
+      user-id: 200
+      group-id: 200
+      run: exec $PG_BIN/postgres -F --port=$PG_PORT -k $PGDATA
 
   manage.py: !Command
     description: Shortcut to manage.py
