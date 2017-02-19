@@ -1,2 +1,2 @@
 -r base-requirements.txt
-pre-commit
+pre-commit==0.9.3
