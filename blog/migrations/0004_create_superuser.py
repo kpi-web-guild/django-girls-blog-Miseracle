@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.contrib.auth.hashers import make_password
+from django.conf import settings
 
 def create_superuser(apps, schema_editor):
     User = apps.get_model('auth', 'User')
-    User.objects.create(username='chronokeeper',
-                        email='cegorakh@gmail.com',
-                        password=make_password('kjkszpj11'),
+    User.objects.create(username=settings.ADMIN_LOGNAME,
+                        email=settings.ADMIN_EMAIL,
+                        password=make_password(settings.ADMIN_PASS),
                         is_superuser=True,
                         is_staff=True,
                         is_active=True)

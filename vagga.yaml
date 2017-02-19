@@ -68,16 +68,16 @@ commands:
       $PG_BIN/pg_ctl stop
 
 
-    app: &run-app !Command
-      container: django
-      run: |
+  app: &run-app !Command
+    container: django
+    run: |
           python3 manage.py migrate
           python3 manage.py runserver
-    db: &run-db !Command
-      container: postgres
-      user-id: 200
-      group-id: 200
-      run: exec $PG_BIN/postgres -F --port=$PG_PORT -k $PGDATA
+  db: &run-db !Command
+    container: postgres
+    user-id: 200
+    group-id: 200
+    run: exec $PG_BIN/postgres -F --port=$PG_PORT -k $PGDATA
 
   manage.py: !Command
     description: Shortcut to manage.py
