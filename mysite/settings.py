@@ -79,6 +79,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {'default': env.db(default='sqlite:///db.sqlite3')}
 
+ADMIN_LOGNAME = env('ADMIN_LOGNAME', default='admin')
+ADMIN_EMAIL = env('ADMIN_EMAIL', default='admin@gmail.com')
+ADMIN_PASS = env('ADMIN_PASS', default='P@ssw0rd')
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
