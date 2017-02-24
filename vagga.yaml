@@ -59,8 +59,7 @@ containers:
     - !Depends .pre-commit-config.yaml
     - !Py3Requirements test-requirements.txt
     - !Py3Install [setuptools]
-    - !Sh HOME=/root pre-commit install
-    - !Sh HOME=/root pre-commit autoupdate
+    - !Sh HOME=/root pre-commit install-hooks
 
 commands:
   _pg-init: !Command
