@@ -50,6 +50,16 @@ containers:
         owner-gid: 200
         init-command: _pg-init
       /run: !Tmpfs
+  test:
+    setup:
+    - !Ubuntu xenial
+    - !PipConfig
+      dependencies: true
+    - !Install [git]
+    - !Depends .pre-commit-config.yaml
+    - !Py3Requirements test-requirements.txt
+    - !Py3Install [setuptools]
+    - !Sh HOME=/root pre-commit install-hooks
 
 commands:
   _pg-init: !Command
@@ -89,3 +99,13 @@ commands:
     children:
       app: *run-app
       db: *run-db
+
+  test: !Command
+    description: Run tests
+    container: test
+    run: pre-commit run --all-files
+
+  pre-commit: !Command
+    description: Run pre-commit
+    container: test
+    run: [pre-commit]

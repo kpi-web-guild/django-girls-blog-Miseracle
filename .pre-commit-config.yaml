@@ -1,23 +1,24 @@
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha:  master
+    sha: e626cd57090d8df0be21e4df0f4e55cc3511d6ab
     hooks:
-    -   id:  trailing-whitespace
-    -   id:  check-ast
-    -   id:  check-yaml
+    -   id: trailing-whitespace
+    -   id: check-ast
+    -   id: check-yaml
         exclude: vagga.yaml
-    -   id:  check-merge-conflict
-    -   id:  check-docstring-first
-    -   id:  debug-statements
-    -   id:  double-quote-string-fixer
-    -   id:  end-of-file-fixer
-    -   id:  flake8
+    -   id: check-merge-conflict
+    -   id: check-docstring-first
+    -   id: debug-statements
+    -   id: double-quote-string-fixer
+    -   id: end-of-file-fixer
+    -   id: flake8
         exclude: blog/migrations
-        args: [--max-line-length=120]
-    -   id:  name-tests-test
-    -   id:  requirements-txt-fixer
-    -   id:  trailing-whitespace
+        args:
+        - --max-line-length=120
+    -   id: name-tests-test
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
 -   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
-    sha:  master
+    sha: 149e61b7a717945143fe51f010fe1c576e729a9f
     hooks:
-    -   id:  pep257
+    -   id: pep257
         exclude: blog/migrations
