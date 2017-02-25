@@ -108,4 +108,4 @@ commands:
   pre-commit: !Command
     description: Run pre-commit
     container: test
-    run: [pre-commit, run]
+    run: [pre-commit]
