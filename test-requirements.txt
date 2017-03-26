@@ -1,2 +1,5 @@
 -r base-requirements.txt
+django-environ==0.4.1
+gunicorn==19.6.0
 pre-commit==0.10.0
+whitenoise==3.2.3

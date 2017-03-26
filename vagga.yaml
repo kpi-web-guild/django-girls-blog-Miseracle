@@ -60,6 +60,7 @@ containers:
     - !Py3Requirements test-requirements.txt
     - !Py3Install [setuptools]
     - !Sh HOME=/root pre-commit install-hooks
+    environ-file: /work/mysite/.env
 
 commands:
   _pg-init: !Command
@@ -100,10 +101,15 @@ commands:
       app: *run-app
       db: *run-db
 
+  lint: !Command
+    description: Run linters
+    container: test
+    run: pre-commit run --all-files
+
   test: !Command
     description: Run tests
     container: test
-    run: pre-commit run --all-files
+    run: python3 manage.py test --pattern="*_test.py"
 
   pre-commit: !Command
     description: Run pre-commit
