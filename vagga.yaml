@@ -115,4 +115,4 @@ commands:
   test: !Command
     description: Run tests
     container: test
-    run: python3 manage.py test --pattern="*_test.py"
+    run: python3 manage.py test

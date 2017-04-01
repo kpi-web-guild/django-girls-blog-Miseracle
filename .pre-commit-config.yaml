@@ -15,6 +15,7 @@
         args:
         - --max-line-length=120
     -   id: name-tests-test
+        args: [--django]
     -   id: requirements-txt-fixer
     -   id: trailing-whitespace
 -   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
