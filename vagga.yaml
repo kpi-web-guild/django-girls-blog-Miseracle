@@ -52,18 +52,14 @@ containers:
       /run: !Tmpfs
   test:
     setup:
-    - !Ubuntu xenial
+    - !Ubuntu trusty
     - !PipConfig
       dependencies: true
-    - !Install [git]
     - !Depends .pre-commit-config.yaml
     - !Py3Requirements test-requirements.txt
-    #- !Py3Install [setuptools]
-    #- !Sh HOME=/root pre-commit install-hooks
-
   lint:
     setup:
-    - !Ubuntu xenial
+    - !Ubuntu trusty
     - !PipConfig
       dependencies: true
     - !Install [git]

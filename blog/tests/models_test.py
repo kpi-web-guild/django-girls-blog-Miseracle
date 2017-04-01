@@ -1,9 +1,11 @@
 """Tests for models."""
 from datetime import datetime
 from unittest.mock import patch
-from django.test import TestCase
+
 from django.contrib.auth.models import User
+from django.test import TestCase
 from django.utils import timezone
+
 from blog.models import Post, Comment
 
 
@@ -57,6 +59,9 @@ class ModelCommentTest(TestCase):
 
     def test_comment_approve(self):
         """Comment approved successfully."""
+        self.assertFalse(self.test_comment.is_approved)
+        self.test_comment.approve()
+        self.assertTrue(self.test_comment.is_approved)
         self.test_comment.approve()
         self.assertTrue(self.test_comment.is_approved)
 

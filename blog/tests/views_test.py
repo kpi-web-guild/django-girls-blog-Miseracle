@@ -1,10 +1,12 @@
 """Tests for views."""
 from datetime import datetime
-from django.test import TestCase, Client
 from unittest.mock import patch
+
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.test import TestCase, Client
 from django.utils import timezone
+
 from blog.models import Post, Comment
 
 
@@ -30,7 +32,7 @@ class ViewsTest(TestCase):
         del self.client
         del self.user
 
-    def testIndexRendering(self):
+    def test_index_rendering(self):
         """Test post list rendering."""
         tz = timezone.get_current_timezone()
         post = Post.objects.create(author=self.user, title='Test', text='superText',
@@ -167,11 +169,15 @@ class ViewsTest(TestCase):
 
     def test_comment_delete(self):
         """Testing delete comment view."""
+        response = self.client.get(reverse('post_remove', kwargs={'pk': 1}))
+        self.assertEqual(302, response.status_code)
+        authorization = self.client.login(username=self.USERNAME, password=self.PASSWORD)
+        self.assertTrue(authorization)
+        response = self.client.get(reverse('post_remove', kwargs={'pk': 1}))
+        self.assertEqual(404, response.status_code)
         self.post = Post.objects.create(author=self.user, title='Test', text='superText')
         self.comment = Comment.objects.create(post=self.post, author=self.user, text='superComment')
         self.other_comment = Comment.objects.create(post=self.post, author=self.user, text='AnotherComment')
-        authorization = self.client.login(username=self.USERNAME, password=self.PASSWORD)
-        self.assertTrue(authorization)
         response = self.client.get(reverse('comment_remove', kwargs={'pk': self.comment.pk}), follow=True)
         self.assertRedirects(response, reverse('post_detail', kwargs={'pk': self.post.pk}))
         response = self.client.get(reverse('post_detail', kwargs={'pk': self.post.pk}), follow=True)
