@@ -31,3 +31,4 @@ install: vagga _build test
 
 script:
   - vagga test
+  - vagga lint

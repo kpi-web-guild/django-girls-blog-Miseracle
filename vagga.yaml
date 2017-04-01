@@ -52,7 +52,14 @@ containers:
       /run: !Tmpfs
   test:
     setup:
-    - !Ubuntu xenial
+    - !Ubuntu trusty
+    - !PipConfig
+      dependencies: true
+    - !Depends .pre-commit-config.yaml
+    - !Py3Requirements test-requirements.txt
+  lint:
+    setup:
+    - !Ubuntu trusty
     - !PipConfig
       dependencies: true
     - !Install [git]
@@ -100,12 +107,12 @@ commands:
       app: *run-app
       db: *run-db
 
+  lint: !Command
+    description: Run linters
+    container: lint
+    run: pre-commit run --all-files
+
   test: !Command
     description: Run tests
     container: test
-    run: pre-commit run --all-files
-
-  pre-commit: !Command
-    description: Run pre-commit
-    container: test
-    run: [pre-commit]
+    run: python3 manage.py test
