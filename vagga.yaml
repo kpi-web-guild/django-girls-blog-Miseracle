@@ -22,6 +22,8 @@ containers:
     - !BuildDeps [postgresql-dev]
     - !Install
       - libpq
+    - !Py3Install
+      - pydevd
     - !Py3Requirements requirements.txt
     environ:
       DATABASE_URL: postgresql://vagga:vagga@127.0.0.1:5433/mainDB

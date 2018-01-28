@@ -138,7 +138,7 @@ class ViewsTest(TestCase):
         self.assertEqual(404, response.status_code)
         post = Post.objects.create(author=self.user, title='Tst', text='superText')
         other_post = Post.objects.create(author=self.user, title='Test_other', text='Other text')
-        response = self.client.get(reverse('post_remove', kwargs={'pk': post.pk}), follow=True)
+        response = self.client.post(reverse('post_remove', kwargs={'pk': post.pk}), follow=True)
         self.assertRedirects(response, reverse('post_list'))
         response = self.client.get(reverse('post_draft_list'), follow=True)
         self.assertNotContains(response, post)

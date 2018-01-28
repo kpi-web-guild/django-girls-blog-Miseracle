@@ -12,6 +12,7 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
+
 from whitenoise.django import DjangoWhiteNoise  # noqa: E402
 
 application = DjangoWhiteNoise(get_wsgi_application())

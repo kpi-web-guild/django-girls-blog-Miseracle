@@ -1,8 +1,10 @@
 *.pyc
 __pycache__
-tvenv
+djenv
 db.sqlite3
 .DS_Store
 .env
 .vagga
 .idea
+pycharm-debug-py3k.egg
+pydebug
