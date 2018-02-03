@@ -5,13 +5,14 @@
 
 from django.db import models
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 
 class Post(models.Model):
     """Represent a post in a blog.
 
     Fields: author, title, text, created_date, published_date
-    Methods: publish, __str__
+    Methods: publish, __str__, get_absolute_url
     """
 
     author = models.ForeignKey('auth.User')
@@ -26,6 +27,10 @@ class Post(models.Model):
         """Publish this post."""
         self.published_date = timezone.now()
         self.save()
+
+    def get_absolute_url(self):
+        """Redirect to view with detail info about post."""
+        return reverse('post_detail', args=[str(self.pk)])
 
     def __str__(self):
         """Show post title."""

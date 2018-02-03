@@ -13,6 +13,14 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ('title', 'text',)
 
+    def save(self, user=None):
+        """Save post to DB, assigning author field."""
+        post = super(PostForm, self).save(commit=False)
+        if user:
+            post.author = user
+            post.save()
+        return post
+
 
 class CommentForm(forms.ModelForm):
     """Main form for comment."""

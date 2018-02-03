@@ -1,16 +1,13 @@
-"""Views for blog app.
+"""Views for blog app."""
 
-- post_list - returns post list;
-"""
-
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseRedirect
 from .models import Post, Comment
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 # Create your views here.
 
 
@@ -44,18 +41,13 @@ class PostDetailView(DetailView):
 class NewPost(CreateView, Protected):
     """View for creating new post."""
 
-    model = Post
-    fields = ['title', 'text']
+    form_class = PostForm
     template_name = 'blog/post_edit.html'
 
-    def post(self, request, *args, **kwargs):
-        """Get author-field from request and save post to DB."""
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            return redirect('post_detail', pk=post.pk)
+    def form_valid(self, form):
+        """Pass request.user to model."""
+        form.save(self.request.user)
+        return super(NewPost, self).form_valid(form)
 
 
 class EditPost(UpdateView, Protected):
@@ -64,10 +56,6 @@ class EditPost(UpdateView, Protected):
     model = Post
     fields = ['title', 'text']
     template_name = 'blog/post_edit.html'
-
-    def get_success_url(self):
-        """Return to detail view of edited post."""
-        return reverse_lazy('post_detail', kwargs={'pk': self.object.pk})
 
 
 class PostDraftList(ListView, Protected):
@@ -78,14 +66,14 @@ class PostDraftList(ListView, Protected):
     queryset = Post.objects.filter(published_date__isnull=True).order_by('created_date')
 
 
-class PublishPost(TemplateView, Protected):
+class PublishPost(UpdateView, Protected):
     """View for publishing post."""
 
     def get(self, request, *args, **kwargs):
         """Publish post."""
-        post = get_object_or_404(Post, pk=kwargs['pk'])
+        post = self.get_object(Post.objects.filter(pk=kwargs['pk']))
         post.publish()
-        return redirect('post_detail', pk=post.pk)
+        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': post.pk}))
 
 
 class RemovePost(DeleteView, Protected):
@@ -105,23 +93,23 @@ class AddComment(CreateView):
 
     def post(self, request, *args, **kwargs):
         """Save new comment to DB."""
-        post = get_object_or_404(Post, pk=kwargs['pk'])
+        post = self.get_object(Post.objects.filter(pk=kwargs['pk']))
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
             comment.save()
-            return redirect('post_detail', pk=post.pk)
+            return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': post.pk}))
 
 
-class ApproveComment(TemplateView, Protected):
+class ApproveComment(UpdateView, Protected):
     """View for approving comment, if authorized."""
 
     def get(self, request, *args, **kwargs):
         """Approve comment."""
-        comment = get_object_or_404(Comment, pk=kwargs['pk'])
+        comment = self.get_object(Comment.objects.filter(pk=kwargs['pk']))
         comment.approve()
-        return redirect('post_detail', pk=comment.post.pk)
+        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': comment.post.pk}))
 
 
 class RemoveComment(DeleteView, Protected):
@@ -132,7 +120,7 @@ class RemoveComment(DeleteView, Protected):
 
     def get(self, request, *args, **kwargs):
         """Delete comment and return to base post."""
-        comment = get_object_or_404(Comment, pk=kwargs['pk'])
+        comment = self.get_object(Comment.objects.filter(pk=kwargs['pk']))
         post_pk = comment.post.pk
         comment.delete()
-        return redirect('post_detail', pk=post_pk)
+        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': post_pk}))
