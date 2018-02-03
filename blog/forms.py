@@ -30,3 +30,11 @@ class CommentForm(forms.ModelForm):
 
         model = Comment
         fields = ('author', 'text',)
+
+    def save(self, post=None):
+        """Save comment to DB, assigning post (parent) field."""
+        comment = super(CommentForm, self).save(commit=False)
+        if post:
+            comment.post = post
+            comment.save()
+        return comment

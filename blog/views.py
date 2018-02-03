@@ -87,19 +87,14 @@ class RemovePost(DeleteView, Protected):
 class AddComment(CreateView):
     """View for adding comment to post."""
 
-    model = Comment
-    fields = ['author', 'text']
+    form_class = CommentForm
     template_name = 'blog/add_comment.html'
 
-    def post(self, request, *args, **kwargs):
-        """Save new comment to DB."""
-        post = self.get_object(Post.objects.filter(pk=kwargs['pk']))
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
-            return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': post.pk}))
+    def form_valid(self, form):
+        """Pass parent post pk to model."""
+        post = self.get_object(Post.objects.filter(pk=self.kwargs['pk']))
+        form.save(post)
+        return super(AddComment, self).form_valid(form)
 
 
 class ApproveComment(UpdateView, Protected):

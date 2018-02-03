@@ -59,3 +59,7 @@ class Comment(models.Model):
     def __str__(self):
         """Represent a comment as a string by its text."""
         return self.text
+
+    def get_absolute_url(self):
+        """Redirect to view with detail info about parent post."""
+        return reverse('post_detail', args=[str(self.post.pk)])
