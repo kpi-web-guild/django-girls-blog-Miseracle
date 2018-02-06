@@ -29,8 +29,8 @@ class Post(models.Model):
         self.save()
 
     def get_absolute_url(self):
-        """Redirect to view with detail info about post."""
-        return reverse('post_detail', args=[str(self.pk)])
+        """Return url for view with detail info about post."""
+        return reverse('post_detail', args=[self.pk])
 
     def __str__(self):
         """Show post title."""
@@ -61,5 +61,5 @@ class Comment(models.Model):
         return self.text
 
     def get_absolute_url(self):
-        """Redirect to view with detail info about parent post."""
-        return reverse('post_detail', args=[str(self.post.pk)])
+        """Return url for view with detail info about parent post."""
+        return reverse('post_detail', args=[self.post.pk])

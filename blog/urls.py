@@ -5,7 +5,6 @@
 
 from django.conf.urls import url
 from . import views
-from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', views.PostListView.as_view(), name='post_list'),
@@ -18,5 +17,4 @@ urlpatterns = [
     url(r'^post/(?P<pk>\d+)/comment/$', views.AddComment.as_view(), name='add_comment'),
     url(r'^comment/(?P<pk>\d+)/approve/$', views.ApproveComment.as_view(), name='comment_approve'),
     url(r'^comment/(?P<pk>\d+)/remove/$', views.RemoveComment.as_view(), name='comment_remove'),
-    url(r'^admin/', admin.site.urls),
 ]

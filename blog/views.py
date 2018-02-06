@@ -47,7 +47,7 @@ class NewPost(CreateView, Protected):
     def form_valid(self, form):
         """Pass request.user to model."""
         form.save(self.request.user)
-        return super(NewPost, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class EditPost(UpdateView, Protected):
@@ -69,11 +69,15 @@ class PostDraftList(ListView, Protected):
 class PublishPost(UpdateView, Protected):
     """View for publishing post."""
 
+    model = Post
+    fields = ['title', 'text']
+    template_name = 'blog/post_detail.html'
+
     def get(self, request, *args, **kwargs):
         """Publish post."""
-        post = self.get_object(Post.objects.filter(pk=kwargs['pk']))
-        post.publish()
-        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': post.pk}))
+        super().get(self, request, *args, **kwargs)
+        self.object.publish()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class RemovePost(DeleteView, Protected):
@@ -94,28 +98,30 @@ class AddComment(CreateView):
         """Pass parent post pk to model."""
         post = self.get_object(Post.objects.filter(pk=self.kwargs['pk']))
         form.save(post)
-        return super(AddComment, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class ApproveComment(UpdateView, Protected):
     """View for approving comment, if authorized."""
 
+    model = Comment
+    fields = ['author', 'text']
+
     def get(self, request, *args, **kwargs):
         """Approve comment."""
-        comment = self.get_object(Comment.objects.filter(pk=kwargs['pk']))
-        comment.approve()
-        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': comment.post.pk}))
+        super().get(self, request, *args, **kwargs)
+        self.object.approve()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class RemoveComment(DeleteView, Protected):
     """View for deleting comment, if authorized."""
 
     model = Comment
-    template_name = 'blog/post_detail.html'
+    fields = ['author', 'text']
 
     def get(self, request, *args, **kwargs):
         """Delete comment and return to base post."""
-        comment = self.get_object(Comment.objects.filter(pk=kwargs['pk']))
-        post_pk = comment.post.pk
-        comment.delete()
-        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': post_pk}))
+        super().get(self, request, *args, **kwargs)
+        self.object.delete()
+        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': self.object.post.pk}))

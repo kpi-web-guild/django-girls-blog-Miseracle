@@ -15,7 +15,7 @@ class PostForm(forms.ModelForm):
 
     def save(self, user=None):
         """Save post to DB, assigning author field."""
-        post = super(PostForm, self).save(commit=False)
+        post = super().save(commit=False)
         if user:
             post.author = user
             post.save()
@@ -33,7 +33,7 @@ class CommentForm(forms.ModelForm):
 
     def save(self, post=None):
         """Save comment to DB, assigning post (parent) field."""
-        comment = super(CommentForm, self).save(commit=False)
+        comment = super().save(commit=False)
         if post:
             comment.post = post
             comment.save()
